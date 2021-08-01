@@ -1,5 +1,5 @@
 module.exports = {
-  '*.+(js|jsx|json|yml|yaml|css|less|scss|ts|tsx|md|graphql|mdx|vue)': [
+  '*.+(js|jsx|json|css|less|scss|ts|tsx)': [
     `npm run prettier-format`,
     `npm run lint`,
     `npm run test`,
