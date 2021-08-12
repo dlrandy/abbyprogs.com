@@ -1,50 +1,60 @@
-import React, {useState} from 'react'
-import {ReactComponent as SvgLogo} from './logo.svg'
-import logo from './logo.svg'
-import './App.css'
-import {Test} from '@app/FooBar'
-function App() {
-  const [count, setCount] = useState(0)
+import * as React from 'react'
 
-  const [test, setTest] = useState('test')
+import {Button, ChakraProvider} from '@chakra-ui/react'
 
+import {Logo} from '@app/components/Logo/index'
+import {FormBasic} from '@app/components/Form'
+import {ModalBasic} from '@app/components/Modal'
+
+type FormDataBasic = {
+  username: string
+  password: string
+}
+type onSubmitEventHanlder = (params: FormDataBasic) => any
+
+function Component() {
+  const [openModal, setOpenModal] = React.useState('none')
+  const login: onSubmitEventHanlder = formData => {
+    console.log('login', formData)
+  }
+
+  const register: onSubmitEventHanlder = formData => {
+    console.log('register', formData)
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <SvgLogo />
+      <Logo width="80" height="80" />
+      <h1>Bookshelf</h1>
+      <div>
+        <Button onClick={() => setOpenModal('login')}>Login</Button>
+      </div>
+      <div>
+        <Button onClick={() => setOpenModal('register')}>Register</Button>
+      </div>
+      <ModalBasic
+        title="Login Form"
+        isOpen={openModal == 'login'}
+        onClose={() => setOpenModal('none')}
+      >
+        <FormBasic onSubmit={login} buttonText="Login" />
+      </ModalBasic>
 
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount(count => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <Test />
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+      <ModalBasic
+        title="Register Form"
+        isOpen={openModal == 'register'}
+        onClose={() => setOpenModal('none')}
+      >
+        <FormBasic onSubmit={register} buttonText="Register" />
+      </ModalBasic>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <ChakraProvider>
+      <Component />
+    </ChakraProvider>
   )
 }
 

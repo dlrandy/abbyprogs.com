@@ -18,6 +18,7 @@
     "importHelpers": true,
     "noEmit": true,
     "jsx": "react",
+    "jsxImportSource": "@emotion/react",
     "paths": {
       "@app/*": ["src/*"]
     }
