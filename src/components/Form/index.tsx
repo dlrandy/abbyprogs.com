@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import {Button} from '@chakra-ui/react'
+import {Button, FormControl, FormLabel, Input} from '@chakra-ui/react'
 
 type LoginFormElementData = {
   username: {value: string}
@@ -29,15 +29,27 @@ function FormBasic({onSubmit, buttonText}: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username">Username</label>
-        <input id="username" />
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input id="password" type="password" />
-      </div>
+    <form
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        '> div': {
+          margin: '10px auto',
+          width: '100%',
+          maxWidth: '300px',
+        },
+      }}
+      onSubmit={handleSubmit}
+    >
+      <FormControl id="username">
+        <FormLabel>Username</FormLabel>
+        <Input />
+      </FormControl>
+      <FormControl id="password">
+        <FormLabel>Password</FormLabel>
+        <Input type="password" />
+      </FormControl>
       <div>
         <Button type="submit">{buttonText}</Button>
       </div>

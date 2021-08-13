@@ -22,13 +22,26 @@ function Component() {
     console.log('register', formData)
   }
   return (
-    <div className="App">
+    <div
+      css={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100vh',
+      }}
+    >
       <Logo width="80" height="80" />
       <h1>Bookshelf</h1>
-      <div>
+      <div
+        css={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+          gridGap: '0.75rem',
+        }}
+      >
         <Button onClick={() => setOpenModal('login')}>Login</Button>
-      </div>
-      <div>
         <Button onClick={() => setOpenModal('register')}>Register</Button>
       </div>
       <ModalBasic
