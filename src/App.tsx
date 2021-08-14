@@ -1,5 +1,5 @@
 import * as React from 'react'
-
+import 'twin.macro'
 import {Button, ChakraProvider} from '@chakra-ui/react'
 
 import {Logo} from '@app/components/Logo/index'
@@ -22,25 +22,10 @@ function Component() {
     console.log('register', formData)
   }
   return (
-    <div
-      css={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100vh',
-      }}
-    >
+    <div tw="flex flex-col justify-center items-center w-full h-screen">
       <Logo width="80" height="80" />
       <h1>Bookshelf</h1>
-      <div
-        css={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          gridGap: '0.75rem',
-        }}
-      >
+      <div tw="grid grid-cols-2 gap-3">
         <Button onClick={() => setOpenModal('login')}>Login</Button>
         <Button onClick={() => setOpenModal('register')}>Register</Button>
       </div>

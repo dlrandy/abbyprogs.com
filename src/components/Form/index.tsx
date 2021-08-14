@@ -1,5 +1,5 @@
 import * as React from 'react'
-
+import tw, {css, styled} from 'twin.macro'
 import {Button, FormControl, FormLabel, Input} from '@chakra-ui/react'
 
 type LoginFormElementData = {
@@ -16,6 +16,8 @@ type LoginFormProps = {
   buttonText: string
   children?: React.ReactNode
 }
+
+const Form = styled.form(() => [tw`flex flex-col items-stretch`])
 function FormBasic({onSubmit, buttonText}: LoginFormProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -29,11 +31,8 @@ function FormBasic({onSubmit, buttonText}: LoginFormProps) {
   }
 
   return (
-    <form
+    <Form
       css={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
         '> div': {
           margin: '10px auto',
           width: '100%',
@@ -53,7 +52,7 @@ function FormBasic({onSubmit, buttonText}: LoginFormProps) {
       <div>
         <Button type="submit">{buttonText}</Button>
       </div>
-    </form>
+    </Form>
   )
 }
 export {FormBasic}
