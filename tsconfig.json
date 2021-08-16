@@ -3,13 +3,7 @@
     "baseUrl": ".",
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": [
-      "vite/client",
-      "@types/jest",
-      "@types/node",
-      "cypress",
-      "@testing-library/cypress"
-    ],
+    "types": ["vite/client", "@types/jest", "@types/node"],
     "typeRoots": ["./node_modules/@types"],
     "allowJs": true,
     "skipLibCheck": false,
