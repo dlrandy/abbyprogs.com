@@ -5,7 +5,7 @@ import {Button, ChakraProvider} from '@chakra-ui/react'
 import {Logo} from '@app/components/Logo/index'
 import {FormBasic} from '@app/components/Form'
 import {ModalBasic} from '@app/components/Modal'
-
+import {DiscoverScreen} from '@app/screens/Discover/index'
 type FormDataBasic = {
   username: string
   password: string
@@ -51,7 +51,8 @@ function Component() {
 function App() {
   return (
     <ChakraProvider>
-      <Component />
+      {/* <Component /> */}
+      <DiscoverScreen />
     </ChakraProvider>
   )
 }

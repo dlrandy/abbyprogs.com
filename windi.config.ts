@@ -6,6 +6,9 @@ export default defineConfig({
   safelist: 'p-3 p-4 p-5',
   theme: {
     extend: {
+      width: {
+        'screen-90': '90vw',
+      },
       colors: {
         teal: {
           100: '#096',
