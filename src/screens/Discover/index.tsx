@@ -1,31 +1,88 @@
 import * as React from 'react'
-import tw from 'twin.macro'
-import styled from '@emotion/styled'
-/** @jsx jsx */
-import {css, jsx} from '@emotion/react'
-import {Button, FormControl, FormLabel, Input} from '@chakra-ui/react'
+import {Tooltip} from '@chakra-ui/react'
+import {FaSearch} from 'react-icons/fa'
+import {Input, BookListUL, Spinner} from '@app/components/lib'
+import {BookRow} from '@app/components/Book-Row/index'
+import {client} from '@app/utils/api-client'
+import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
+import * as colors from '@app/styles/colors'
+import {useAsync} from '@app/utils/hooks'
+function DiscoverBooksScreen(): EmotionJSX.Element {
+  const {data, error, run, isLoading, isError, isSuccess} = useAsync<
+    {books: Book[]},
+    {message: string}
+  >()
 
-function DiscoverScreen() {
+  const [query, setQuery] = React.useState('')
+
+  const [queried, setQueried] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!queried) {
+      return
+    }
+
+    run(client(`books?query=${encodeURIComponent(query)}`))
+  }, [query, queried, run])
+
+  type SearchFormElementData = {
+    search: {value: string}
+  }
+
+  function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setQueried(true)
+    const {search} = event.target as typeof event.target & SearchFormElementData
+    setQuery(search.value)
+  }
+
   return (
-    <div css={[tw`max-w-800 m-auto w-screen-90 p-p32px py-0`]}>
-      <Form>
-        <FormControl id="username">
-          <FormLabel>Username</FormLabel>
-          <Input
-            placeholder="Search books..."
-            id="search"
-            css={{width: '100%'}}
-          />
-        </FormControl>
-        <FormControl id="password">
-          <FormLabel>Password</FormLabel>
-          <Input type="password" />
-        </FormControl>
-        <div>
-          <Button type="submit">{buttonText}</Button>
+    <div
+      css={{maxWidth: 800, margin: 'auto', width: '90vw', padding: '40px 0'}}
+    >
+      <form onSubmit={handleSearchSubmit}>
+        <Input
+          placeholder="Search books..."
+          id="search"
+          css={{width: '100%'}}
+        />
+        <Tooltip label="Search Books">
+          <label htmlFor="search">
+            <button
+              type="submit"
+              css={{
+                border: '0',
+                position: 'relative',
+                marginLeft: '-35px',
+                background: 'transparent',
+              }}
+            >
+              {isLoading ? <Spinner /> : <FaSearch aria-label="search" />}
+            </button>
+          </label>
+        </Tooltip>
+      </form>
+      {isError ? (
+        <div css={{color: colors.danger}}>
+          <p>There was an error:</p>
+          <pre>{error.message}</pre>
         </div>
-      </Form>
+      ) : null}
+      {isSuccess ? (
+        data?.books?.length ? (
+          <BookListUL css={{marginTop: 20}}>
+            {data.books.map(book => (
+              <li key={book.id} aria-label={book.title}>
+                <BookRow key={book.id} book={book} />
+              </li>
+            ))}
+          </BookListUL>
+        ) : (
+          <p>No books found. Try another search.</p>
+        )
+      ) : null}
     </div>
   )
 }
-export {DiscoverScreen}
+
+export {DiscoverBooksScreen}

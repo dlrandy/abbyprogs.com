@@ -1,11 +1,11 @@
 import * as React from 'react'
 import 'twin.macro'
 import {Button, ChakraProvider} from '@chakra-ui/react'
-
+import '@app/server/index'
 import {Logo} from '@app/components/Logo/index'
 import {FormBasic} from '@app/components/Form'
 import {ModalBasic} from '@app/components/Modal'
-import {DiscoverScreen} from '@app/screens/Discover/index'
+import {DiscoverBooksScreen} from '@app/screens/Discover/index'
 type FormDataBasic = {
   username: string
   password: string
@@ -52,7 +52,7 @@ function App() {
   return (
     <ChakraProvider>
       {/* <Component /> */}
-      <DiscoverScreen />
+      <DiscoverBooksScreen />
     </ChakraProvider>
   )
 }

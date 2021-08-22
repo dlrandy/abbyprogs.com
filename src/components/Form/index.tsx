@@ -1,8 +1,7 @@
 import * as React from 'react'
 import tw from 'twin.macro'
 import styled from '@emotion/styled'
-/** @jsx jsx */
-import {css, jsx} from '@emotion/react'
+import {css} from '@emotion/react'
 import {Button, FormControl, FormLabel, Input} from '@chakra-ui/react'
 
 type LoginFormElementData = {
