@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {Tooltip} from '@chakra-ui/react'
 import {FaSearch} from 'react-icons/fa'
+import tw from 'twin.macro'
 import {Input, BookListUL, Spinner} from '@app/components/lib'
 import {BookRow} from '@app/components/Book-Row/index'
 import {client} from '@app/utils/api-client'
@@ -37,9 +38,7 @@ function DiscoverBooksScreen(): EmotionJSX.Element {
   }
 
   return (
-    <div
-      css={{maxWidth: 800, margin: 'auto', width: '90vw', padding: '40px 0'}}
-    >
+    <div css={[tw`max-w-screen-md m-auto py-10 px-0`]}>
       <form onSubmit={handleSearchSubmit}>
         <Input
           placeholder="Search books..."

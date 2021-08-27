@@ -159,14 +159,12 @@ function FullPageErrorFallback({error}: ErrorMessageProps): EmotionJSX.Element {
   return (
     <div
       role="alert"
-      css={{
-        color: colors.danger,
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+      css={[
+        tw`h-screen flex flex-col justify-center items-center`,
+        css`
+          color: ${colors.danger};
+        `,
+      ]}
     >
       <p>Uh oh... There's a problem. Try refreshing the app.</p>
       <pre>{error.message}</pre>
