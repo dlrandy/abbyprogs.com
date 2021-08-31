@@ -8,14 +8,30 @@ type LoginFormElementData = {
   username: {value: string}
   password: {value: string}
 }
-type LoginFormData = {
-  username: string
-  password: string
-}
-type onSubmitEventHanlder = (params: LoginFormData) => any
+
+type onSubmitEventHanlder = (params: UserData) => any
 type LoginFormProps = {
   onSubmit: onSubmitEventHanlder
   buttonText: string
+  colorScheme:
+    | 'whiteAlpha'
+    | 'blackAlpha'
+    | 'gray'
+    | 'red'
+    | 'orange'
+    | 'yellow'
+    | 'green'
+    | 'teal'
+    | 'blue'
+    | 'cyan'
+    | 'purple'
+    | 'pink'
+    | 'linkedin'
+    | 'facebook'
+    | 'messenger'
+    | 'whatsapp'
+    | 'twitter'
+    | 'telegram'
   children?: React.ReactNode
 }
 
@@ -29,7 +45,7 @@ const Form = styled.form(() => [
     }
   `,
 ])
-function FormBasic({onSubmit, buttonText}: LoginFormProps) {
+function FormBasic({onSubmit, buttonText, colorScheme}: LoginFormProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const {username, password} = event.target as typeof event.target &
@@ -61,7 +77,9 @@ function FormBasic({onSubmit, buttonText}: LoginFormProps) {
         <Input type="password" />
       </FormControl>
       <div>
-        <Button type="submit">{buttonText}</Button>
+        <Button colorScheme={colorScheme} type="submit">
+          {buttonText}
+        </Button>
       </div>
     </Form>
   )
