@@ -38,7 +38,7 @@ function DiscoverBooksScreen(): EmotionJSX.Element {
   }
 
   return (
-    <div css={[tw`max-w-screen-md m-auto py-10 px-0`]}>
+    <div css={[tw`w-full max-w-screen-md m-auto py-14 px-0`]}>
       <form onSubmit={handleSearchSubmit}>
         <Input
           placeholder="Search books..."

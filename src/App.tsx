@@ -1,58 +1,28 @@
 import * as React from 'react'
 import 'twin.macro'
-import {Button, ChakraProvider} from '@chakra-ui/react'
+import {ChakraProvider} from '@chakra-ui/react'
 import '@app/server/index'
-import {Logo} from '@app/components/Logo/index'
-import {FormBasic} from '@app/components/Form'
-import {ModalBasic} from '@app/components/Modal'
-import {DiscoverBooksScreen} from '@app/screens/Discover/index'
-type FormDataBasic = {
-  username: string
-  password: string
-}
-type onSubmitEventHanlder = (params: FormDataBasic) => any
-
-function Component() {
-  const [openModal, setOpenModal] = React.useState('none')
-  const login: onSubmitEventHanlder = formData => {
-    console.log('login', formData)
+import {AuthenticatedApp, UnauthenticatedApp} from '@app/apps'
+import * as auth from '@app/auth/provider'
+import {getUser} from '@app/services/User/index'
+function App(): React.ReactNode {
+  const [user, setUser] = React.useState<User | null>(null)
+  React.useEffect(() => {
+    getUser().then(u => setUser(u))
+  }, [])
+  const login = (form: UserData) => auth.login(form).then(u => setUser(u))
+  const register = (form: UserData) => auth.register(form).then(u => setUser(u))
+  const logout = () => {
+    auth.logout()
+    setUser(null)
   }
-
-  const register: onSubmitEventHanlder = formData => {
-    console.log('register', formData)
-  }
-  return (
-    <div tw="flex flex-col justify-center items-center w-full h-screen">
-      <Logo width="80" height="80" />
-      <h1>Bookshelf</h1>
-      <div tw="grid grid-cols-2 gap-3">
-        <Button onClick={() => setOpenModal('login')}>Login</Button>
-        <Button onClick={() => setOpenModal('register')}>Register</Button>
-      </div>
-      <ModalBasic
-        title="Login Form"
-        isOpen={openModal == 'login'}
-        onClose={() => setOpenModal('none')}
-      >
-        <FormBasic onSubmit={login} buttonText="Login" />
-      </ModalBasic>
-
-      <ModalBasic
-        title="Register Form"
-        isOpen={openModal == 'register'}
-        onClose={() => setOpenModal('none')}
-      >
-        <FormBasic onSubmit={register} buttonText="Register" />
-      </ModalBasic>
-    </div>
-  )
-}
-
-function App() {
   return (
     <ChakraProvider>
-      {/* <Component /> */}
-      <DiscoverBooksScreen />
+      {user ? (
+        <AuthenticatedApp user={user} logout={logout} />
+      ) : (
+        <UnauthenticatedApp login={login} register={register} />
+      )}
     </ChakraProvider>
   )
 }
