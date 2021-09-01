@@ -12,8 +12,7 @@ async function loadMyModule() {
   } else if (process.env.NODE_ENV === 'test') {
     url = './test-server'
   }
-  /* @vite-ignore */
-  ;(await url) && import(url)
+  ;(await url) && import(/* @vite-ignore */ url)
 }
 
 loadMyModule()
