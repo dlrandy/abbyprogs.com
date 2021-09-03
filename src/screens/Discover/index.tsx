@@ -1,30 +1,28 @@
 import * as React from 'react'
 import {Tooltip} from '@chakra-ui/react'
-import {FaSearch} from 'react-icons/fa'
+import {FaSearch, FaTimes} from 'react-icons/fa'
 import tw from 'twin.macro'
 import {Input, BookListUL, Spinner} from '@app/components/lib'
 import {BookRow} from '@app/components/Book-Row/index'
-import {client} from '@app/utils/api-client'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 import * as colors from '@app/styles/colors'
-import {useAsync} from '@app/utils/hooks'
+import {loadingBooks} from '@app/models/Book/index'
+import {useBookSearch, useRefetchBookSearchQuery} from '@app/hooks/book'
 function DiscoverBooksScreen(): EmotionJSX.Element {
-  const {data, error, run, isLoading, isError, isSuccess} = useAsync<
-    {books: Book[]},
-    {message: string}
-  >()
-
   const [query, setQuery] = React.useState('')
-
   const [queried, setQueried] = React.useState(false)
+  const {
+    data = {books: loadingBooks},
+    error,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useBookSearch(encodeURIComponent(query))
+  const getRefetchBookSearchQuery = useRefetchBookSearchQuery()
 
   React.useEffect(() => {
-    if (!queried) {
-      return
-    }
-
-    run(client(`books?query=${encodeURIComponent(query)}`))
-  }, [query, queried, run])
+    return () => getRefetchBookSearchQuery()
+  }, [getRefetchBookSearchQuery])
 
   type SearchFormElementData = {
     search: {value: string}
@@ -56,7 +54,17 @@ function DiscoverBooksScreen(): EmotionJSX.Element {
                 background: 'transparent',
               }}
             >
-              {isLoading ? <Spinner /> : <FaSearch aria-label="search" />}
+              {isLoading ? (
+                <Spinner />
+              ) : isError ? (
+                <FaTimes
+                  css={{
+                    color: colors.danger,
+                  }}
+                />
+              ) : (
+                <FaSearch aria-label="search" />
+              )}
             </button>
           </label>
         </Tooltip>
@@ -64,9 +72,28 @@ function DiscoverBooksScreen(): EmotionJSX.Element {
       {isError ? (
         <div css={{color: colors.danger}}>
           <p>There was an error:</p>
-          <pre>{error.message}</pre>
+          <pre>{error?.message}</pre>
         </div>
       ) : null}
+      <div>
+        {queried ? null : (
+          <div css={{marginTop: 20, fontSize: '1.2em', textAlign: 'center'}}>
+            <p>Welcome to the discover page.</p>
+            <p>Here, let me load a few books for you...</p>
+            {isLoading ? (
+              <div css={{width: '100%', margin: 'auto'}}>
+                <Spinner />
+              </div>
+            ) : isSuccess && data && data.books?.length ? (
+              <p>Here you go! Find more books with the search bar above.</p>
+            ) : isSuccess && data && data.books?.length ? (
+              <p>
+                Hmmm... I couldn't find any books to suggest for you. Sorry.
+              </p>
+            ) : null}
+          </div>
+        )}
+      </div>
       {isSuccess ? (
         data?.books?.length ? (
           <BookListUL css={{marginTop: 20}}>

@@ -1,11 +1,24 @@
 import * as React from 'react'
-import tw from 'twin.macro'
-import {Routes, Route, Link, LinkProps} from 'react-router-dom'
-import {Button} from '@app/components/lib/index'
+import tw, {css} from 'twin.macro'
+import {ErrorBoundary} from 'react-error-boundary'
+import {
+  Routes,
+  Route,
+  Link as RouterLink,
+  LinkProps,
+  useMatch,
+} from 'react-router-dom'
+import {
+  Button,
+  ErrorMessage,
+  FullPageErrorFallback,
+} from '@app/components/lib/index'
 import * as mq from '@app/styles/media-queries'
 import * as colors from '@app/styles/colors'
 import {DiscoverBooksScreen} from '@app/screens/Discover/index'
 import {BookScreen} from '@app/screens/Book/index'
+import {ReadingListScreen} from '@app/screens/ReadingList/index'
+import {FinishedScreen} from '@app/screens/Finished/index'
 import {NotFoundScreen} from '@app/screens/NotFound/index'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 
@@ -14,12 +27,28 @@ type AuthenticatedAppProps = {
   logout: () => void
   [key: string]: unknown
 }
+
+function ErrorFallback({error}: {error: Error}): EmotionJSX.Element {
+  return (
+    <ErrorMessage
+      error={error}
+      css={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    />
+  )
+}
+
 function AuthenticatedApp({
   user,
   logout,
 }: AuthenticatedAppProps): EmotionJSX.Element {
   return (
-    <React.Fragment>
+    <ErrorBoundary FallbackComponent={FullPageErrorFallback}>
       <div css={[tw` flex items-center absolute top-4 right-4 `]}>
         {user.username}
         <Button variant="secondary" css={{marginLeft: '10px'}} onClick={logout}>
@@ -43,30 +72,45 @@ function AuthenticatedApp({
           <Nav />
         </div>
         <main css={[tw`w-full`]}>
-          <AppRoutes user={user} />
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <AppRoutes user={user} />
+          </ErrorBoundary>
         </main>
       </div>
-    </React.Fragment>
+    </ErrorBoundary>
   )
 }
 function NavLink(props: LinkProps): EmotionJSX.Element {
+  const match = useMatch(props.to)
+
   return (
-    <Link
-      css={{
-        display: 'block',
-        padding: '8px 15px 8px 10px',
-        margin: '5px 0',
-        width: '100%',
-        height: '100%',
-        color: colors.text,
-        borderRadius: '2px',
-        borderLeft: '5px solid transparent',
-        ':hover': {
-          color: colors.indigo,
-          textDecoration: 'none',
-          background: colors.gray10,
+    <RouterLink
+      css={[
+        {
+          display: 'block',
+          padding: '8px 15px 8px 10px',
+          margin: '5px 0',
+          width: '100%',
+          height: '100%',
+          color: colors.text,
+          borderRadius: '2px',
+          borderLeft: '5px solid transparent',
+          ':hover': {
+            color: colors.indigo,
+            textDecoration: 'none',
+            background: colors.gray10,
+          },
         },
-      }}
+        match
+          ? {
+              borderLeft: `5px solid ${colors.indigo}`,
+              background: colors.gray10,
+              ':hover': {
+                background: colors.gray10,
+              },
+            }
+          : null,
+      ]}
       {...props}
     />
   )
@@ -93,6 +137,12 @@ function Nav(): EmotionJSX.Element {
         }}
       >
         <li>
+          <NavLink to="/list">Reading List</NavLink>
+        </li>
+        <li>
+          <NavLink to="/finished">Finished Books</NavLink>
+        </li>
+        <li>
           <NavLink to="/discover">Discover</NavLink>
         </li>
       </ul>
@@ -103,7 +153,9 @@ function Nav(): EmotionJSX.Element {
 function AppRoutes({user}: {user: User}): JSX.Element {
   return (
     <Routes>
-      <Route path="/discover" element={<DiscoverBooksScreen />} />
+      <Route path="/list" element={<ReadingListScreen user={user} />} />
+      <Route path="/finished" element={<FinishedScreen user={user} />} />
+      <Route path="/discover" element={<DiscoverBooksScreen user={user} />} />
       <Route path="/book/:bookId" element={<BookScreen user={user} />} />
       <Route path="*" element={<NotFoundScreen />} />
     </Routes>

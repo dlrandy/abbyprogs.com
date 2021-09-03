@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as React from 'react'
 import 'twin.macro'
 import {Button} from '@chakra-ui/react'
@@ -10,12 +11,12 @@ type FormDataBasic = {
   username: string
   password: string
 }
-type onSubmitEventHanlder = (params: FormDataBasic) => any
-const defaultLogin: onSubmitEventHanlder = formData => {
+type onSubmitEventHanlder = (params: FormDataBasic) => Promise<unknown>
+const defaultLogin: onSubmitEventHanlder = async formData => {
   console.log('login', formData)
 }
 
-const defaultRegister: onSubmitEventHanlder = formData => {
+const defaultRegister: onSubmitEventHanlder = async formData => {
   console.log('register', formData)
 }
 type UnauthenticatedAppProps = {
@@ -43,7 +44,14 @@ function UnauthenticatedApp({
         isOpen={openModal == 'login'}
         onClose={() => setOpenModal('none')}
       >
-        <FormBasic onSubmit={login} buttonText="Login" colorScheme={'blue'} />
+        <FormBasic
+          onSubmit={login}
+          submitButton={
+            <Button type="submit" colorScheme={'blue'}>
+              Login
+            </Button>
+          }
+        />
       </ModalBasic>
 
       <ModalBasic
@@ -51,7 +59,10 @@ function UnauthenticatedApp({
         isOpen={openModal == 'register'}
         onClose={() => setOpenModal('none')}
       >
-        <FormBasic onSubmit={register} buttonText="Register" />
+        <FormBasic
+          onSubmit={register}
+          submitButton={<Button type="submit">Register</Button>}
+        />
       </ModalBasic>
     </div>
   )

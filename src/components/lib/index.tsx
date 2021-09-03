@@ -8,6 +8,7 @@ import {ModalBasic as CustomDialog} from '@app/components/Modal/index'
 import {FaSpinner} from 'react-icons/fa'
 import {createStyles} from '@app/types/emotion-styles'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
+import tw, {css} from 'twin.macro'
 const spin = keyframes({
   '0%': {transform: 'rotate(0deg)'},
   '100%': {transform: 'rotate(360deg)'},
@@ -129,7 +130,7 @@ const errorMessageVariants: {
 }
 type ErrorMessageProps = {
   error: Error
-  variant: 'stacked' | 'inline'
+  variant?: 'stacked' | 'inline'
 }
 function ErrorMessage({
   error,

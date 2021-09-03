@@ -2,36 +2,18 @@ import * as React from 'react'
 import tw from 'twin.macro'
 import styled from '@emotion/styled'
 import {css} from '@emotion/react'
-import {Button, FormControl, FormLabel, Input} from '@chakra-ui/react'
-
+import {FormControl, FormLabel, Input} from '@chakra-ui/react'
+import {useAsync} from '@app/utils/hooks'
+import {Spinner, ErrorMessage} from '@app/components/lib/index'
 type LoginFormElementData = {
   username: {value: string}
   password: {value: string}
 }
 
-type onSubmitEventHanlder = (params: UserData) => any
+type onSubmitEventHanlder = (params: UserData) => Promise<unknown>
 type LoginFormProps = {
   onSubmit: onSubmitEventHanlder
-  buttonText: string
-  colorScheme:
-    | 'whiteAlpha'
-    | 'blackAlpha'
-    | 'gray'
-    | 'red'
-    | 'orange'
-    | 'yellow'
-    | 'green'
-    | 'teal'
-    | 'blue'
-    | 'cyan'
-    | 'purple'
-    | 'pink'
-    | 'linkedin'
-    | 'facebook'
-    | 'messenger'
-    | 'whatsapp'
-    | 'twitter'
-    | 'telegram'
+  submitButton: JSX.Element
   children?: React.ReactNode
 }
 
@@ -45,16 +27,20 @@ const Form = styled.form(() => [
     }
   `,
 ])
-function FormBasic({onSubmit, buttonText, colorScheme}: LoginFormProps) {
+function FormBasic({onSubmit, submitButton}: LoginFormProps): JSX.Element {
+  const {isLoading, isError, error, run} = useAsync()
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const {username, password} = event.target as typeof event.target &
       LoginFormElementData
 
-    onSubmit({
-      username: username.value,
-      password: password.value,
-    })
+    run(
+      onSubmit({
+        username: username.value,
+        password: password.value,
+      }),
+    )
   }
 
   return (
@@ -77,10 +63,16 @@ function FormBasic({onSubmit, buttonText, colorScheme}: LoginFormProps) {
         <Input type="password" />
       </FormControl>
       <div>
-        <Button colorScheme={colorScheme} type="submit">
-          {buttonText}
-        </Button>
+        {React.cloneElement(
+          submitButton,
+          {type: 'submit'},
+          ...(Array.isArray(submitButton.props.children)
+            ? submitButton.props.children
+            : [submitButton.props.children]),
+          isLoading ? <Spinner css={{marginLeft: 5}} /> : null,
+        )}
       </div>
+      {isError ? <ErrorMessage error={error} /> : null}
     </Form>
   )
 }
