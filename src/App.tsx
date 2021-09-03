@@ -10,7 +10,8 @@ import {getUser} from '@app/services/User/index'
 import {useAsync} from '@app/utils/hooks'
 import * as colors from '@app/styles/colors'
 import {FullPageSpinner} from '@app/components/lib/index'
-function App(): React.ReactNode {
+import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
+function App(): EmotionJSX.Element | null {
   const {
     data: user,
     error,
@@ -66,6 +67,7 @@ function App(): React.ReactNode {
       </ChakraProvider>
     )
   }
+  return null
 }
 
 export default App

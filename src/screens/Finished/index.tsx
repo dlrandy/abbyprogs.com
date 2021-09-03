@@ -4,10 +4,19 @@ import {useParams} from 'react-router-dom'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 import {getBookById} from '@app/services/Book/index'
 import * as mq from '@app/styles/media-queries'
+import bookPlaceholderSvg from '@app/assets/svgs/book-placeholder.svg'
 import {useAsync} from '@app/utils/hooks'
-import {loadingBook} from '@app/models/Book/index'
 
-function BookScreen(): EmotionJSX.Element {
+const loadingBook = {
+  title: 'Loading...',
+  author: 'loading...',
+  coverImageUrl: bookPlaceholderSvg,
+  publisher: 'Loading Publishing',
+  synopsis: 'Loading...',
+  loadingBook: true,
+}
+
+function FinishedScreen(): EmotionJSX.Element {
   const {bookId} = useParams()
   const {data, run} = useAsync<{book: Book} | null, Error>()
   React.useEffect(() => {
@@ -57,4 +66,4 @@ function BookScreen(): EmotionJSX.Element {
   )
 }
 
-export {BookScreen}
+export {FinishedScreen}

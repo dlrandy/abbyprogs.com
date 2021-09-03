@@ -13,8 +13,8 @@ async function getBookById(bookId: string): Promise<{book: Book} | null> {
 
   return book
 }
-async function queryBook(query: string): Promise<Book[] | null> {
-  let book = null
+async function queryBook(query: string): Promise<{books: Book[] | null}> {
+  let books = null
 
   const token = await auth.getToken()
   if (token) {
@@ -22,10 +22,23 @@ async function queryBook(query: string): Promise<Book[] | null> {
       `books?query=${encodeURIComponent(query)}`,
       {token},
     )
-    book = data.books
+    books = data.books
   }
 
-  return book
+  return {books}
+}
+async function getListBooks(): Promise<{listBooks: Book[] | null}> {
+  let listBooks = null
+
+  const token = await auth.getToken()
+  if (token) {
+    const data = await client<unknown, {listItems: Book[]}>(`list-items`, {
+      token,
+    })
+    listBooks = data.listItems
+  }
+
+  return {listBooks}
 }
 
-export {getBookById, queryBook}
+export {getBookById, queryBook, getListBooks}
