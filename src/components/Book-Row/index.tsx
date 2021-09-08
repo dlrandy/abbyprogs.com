@@ -100,7 +100,7 @@ function BookRow({book}: BookRowProps): EmotionJSX.Element {
               </div>
             </div>
             <small css={{whiteSpace: 'break-spaces', display: 'block'}}>
-              {book.synopsis.substring(0, 500)}...
+              {book.synopsis?.substring(0, 500)}...
             </small>
           </div>
         </div>

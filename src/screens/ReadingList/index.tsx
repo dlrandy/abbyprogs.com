@@ -1,10 +1,10 @@
 import * as React from 'react'
 import {Link} from '@app/components/lib'
 import {ListItemList} from '@app/components/List-Item-List'
+import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 function ReadingListScreen(): EmotionJSX.Element {
   return (
     <ListItemList
-      user={user}
       filterListItems={li => !li.finishDate}
       noListItems={
         <p>
