@@ -1,68 +1,29 @@
 import * as React from 'react'
 import tw from 'twin.macro'
-import {useParams} from 'react-router-dom'
+import {Link} from 'react-router-dom'
+import {ListItemList} from '@app/components/List-Item-List/index'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
-import {getBookById} from '@app/services/Book/index'
-import * as mq from '@app/styles/media-queries'
-import bookPlaceholderSvg from '@app/assets/svgs/book-placeholder.svg'
-import {useAsync} from '@app/utils/hooks'
-
-const loadingBook = {
-  title: 'Loading...',
-  author: 'loading...',
-  coverImageUrl: bookPlaceholderSvg,
-  publisher: 'Loading Publishing',
-  synopsis: 'Loading...',
-  loadingBook: true,
-}
 
 function FinishedScreen(): EmotionJSX.Element {
-  const {bookId} = useParams()
-  const {data, run} = useAsync<{book: Book} | null, Error>()
-  React.useEffect(() => {
-    run(getBookById(bookId))
-  }, [run, bookId])
-  const {title, author, coverImageUrl, publisher, synopsis} =
-    data?.book ?? loadingBook
   return (
-    <div
-      css={[
-        tw`grid grid-cols-[1fr,2fr] gap-8 mb-4`,
-        {
-          [mq.small]: {
-            display: 'flex',
-            flexDirection: 'column',
-          },
-        },
-      ]}
-    >
-      <img
-        src={coverImageUrl}
-        alt={`${title} book cover`}
-        css={{width: '100%', maxWidth: '14rem'}}
-      />
-      <div>
-        <div>
-          <div>
-            <h1>{title}</h1>
-            <div>
-              <i>{author}</i>
-              <span
-                css={{
-                  marginRight: 6,
-                  marginLeft: 6,
-                }}
-              >
-                |
-              </span>
-              <i>{publisher}</i>
-            </div>
-          </div>
-        </div>
-        <br />
-        <p>{synopsis}</p>
-      </div>
-    </div>
+    <ListItemList
+      filterListItems={li => Boolean(li.finishDate)}
+      noListItems={
+        <p>
+          Hey there! This is where books will go when you've finished reading
+          them. Get started by heading over to{' '}
+          <Link to="/discover">the Discover page</Link> to add books to your
+          list.
+        </p>
+      }
+      noFilteredListItems={
+        <p>
+          Looks like you've got some reading to do! Check them out in your{' '}
+          <Link to="/list">reading list</Link> or{' '}
+          <Link to="/discover">discover more</Link>.
+        </p>
+      }
+    />
   )
 }
 
