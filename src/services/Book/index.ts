@@ -1,85 +1,85 @@
 import {client} from '@app/utils/api-client'
 import * as auth from '@app/auth/provider'
-async function getBookById(bookId: string): Promise<{book: Book | null}> {
-  let book = null
+import {stopFunc} from '@app/utils/tools'
 
+async function getBookById(bookId: string): Promise<{book: Book | null}> {
   const token = await auth.getToken()
   if (token) {
-    const data = await client<unknown, {book: Book}>(`books/${bookId}`, {
+    return await client<unknown, {book: Book}>(`books/${bookId}`, {
       token,
     })
-    book = data
   }
 
-  return book
+  stopFunc()
 }
 async function queryBook(query: string): Promise<{books: Book[] | null}> {
-  let books = null
-
   const token = await auth.getToken()
   if (token) {
-    const data = await client<unknown, {books: Book[]}>(
+    return await client<unknown, {books: Book[]}>(
       `books?query=${encodeURIComponent(query)}`,
       {token},
     )
-    books = data.books
   }
 
-  return {books}
+  stopFunc()
 }
 async function getBook(bookId: string): Promise<{book: Book | null}> {
-  let book = null
-
   const token = await auth.getToken()
   if (token) {
-    const data = await client<unknown, {books: Book[]}>(`books/${bookId}`, {
+    return await client<unknown, {book: Book | null}>(`books/${bookId}`, {
       token,
     })
-    book = data.book
   }
-
-  return {book}
+  stopFunc()
 }
-async function getListBooks(): Promise<{listBooks: Book[] | null}> {
-  let listBooks = null
-
+async function getListBooks(): Promise<{listItems: ReadBook[]}> {
   const token = await auth.getToken()
   if (token) {
-    const data = await client<unknown, {listItems: Book[]}>(`list-items`, {
+    const data = await client<unknown, {listItems: ReadBook[]}>(`list-items`, {
       token,
     })
-    listBooks = data.listItems
+    return data
   }
 
-  return {listBooks}
+  stopFunc()
 }
-async function updateListBook(updates: Book): Promise<void> {
+async function updateListBook(updates: ReadBook): Promise<MutationResponse> {
   const token = await auth.getToken()
   if (token) {
-    await client<Book, Book>(`list-items/${updates.id}`, {
-      token,
-      method: 'PUT',
-      data: updates,
-    })
+    const data = await client<ReadBook, MutationResponse>(
+      `list-items/${updates.id}`,
+      {
+        token,
+        method: 'PUT',
+        data: updates,
+      },
+    )
+    return data
   }
+  stopFunc()
 }
-async function deleteListBook(updates: Book): Promise<void> {
+async function deleteListBook(updates: ReadBook): Promise<MutationResponse> {
   const token = await auth.getToken()
   if (token) {
-    await client<Book, Book>(`list-items/${updates.id}`, {
-      token,
-      method: 'Delete',
-    })
+    return await client<ReadBook, MutationResponse>(
+      `list-items/${updates.id}`,
+      {
+        token,
+        method: 'Delete',
+      },
+    )
   }
+  stopFunc()
 }
-async function createListBook(updates: Book): Promise<void> {
+async function createListBook(updates: ReadBook): Promise<MutationResponse> {
   const token = await auth.getToken()
   if (token) {
-    await client<Book, Book>(`list-items`, {
+    return await client<ReadBook, MutationResponse>(`list-items`, {
       token,
       data: {bookId: updates.bookId},
     })
   }
+  stopFunc()
 }
 
 export {

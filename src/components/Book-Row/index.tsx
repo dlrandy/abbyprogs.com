@@ -2,13 +2,15 @@ import {Link} from 'react-router-dom'
 import * as mq from '@app/styles/media-queries'
 import * as colors from '@app/styles/colors'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
-
-type BookRowProps = {
-  book: Book
+import {useListItem} from '@app/hooks/book/listItem'
+import {StatusButtons} from '@app/components/StatusButton/index'
+import {Rating} from '@app/components/Rating/index'
+type BookRowProps<T extends CommonBook> = {
+  book: T
 }
-function BookRow({book}: BookRowProps): EmotionJSX.Element {
+function BookRow<T>({book}: BookRowProps<T>): EmotionJSX.Element {
   const {title, author, coverImageUrl} = book
-
+  const listItem = useListItem(book)
   const id = `book-row-book-${book.id}`
 
   return (

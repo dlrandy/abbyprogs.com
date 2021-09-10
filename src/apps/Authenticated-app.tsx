@@ -73,7 +73,7 @@ function AuthenticatedApp({
         </div>
         <main css={[tw`w-full`]}>
           <ErrorBoundary FallbackComponent={ErrorFallback}>
-            <AppRoutes user={user} />
+            <AppRoutes />
           </ErrorBoundary>
         </main>
       </div>
@@ -150,13 +150,13 @@ function Nav(): EmotionJSX.Element {
   )
 }
 
-function AppRoutes({user}: {user: User}): JSX.Element {
+function AppRoutes(): EmotionJSX.Element {
   return (
     <Routes>
-      <Route path="/list" element={<ReadingListScreen user={user} />} />
-      <Route path="/finished" element={<FinishedScreen user={user} />} />
-      <Route path="/discover" element={<DiscoverBooksScreen user={user} />} />
-      <Route path="/book/:bookId" element={<BookScreen user={user} />} />
+      <Route path="/list" element={<ReadingListScreen />} />
+      <Route path="/finished" element={<FinishedScreen />} />
+      <Route path="/discover" element={<DiscoverBooksScreen />} />
+      <Route path="/book/:bookId" element={<BookScreen />} />
       <Route path="*" element={<NotFoundScreen />} />
     </Routes>
   )

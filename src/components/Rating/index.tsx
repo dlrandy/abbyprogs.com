@@ -3,7 +3,7 @@ import * as colors from '@app/styles/colors'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 import {FaStar} from 'react-icons/fa'
 import {visuallyHiddenCSS} from '@app/styles/utils'
-import {useListBookItemUpdate} from '@app/hooks/book'
+import {useUpdateListItem} from '@app/hooks/book/listItem'
 type BookProps = {
   book: ReadBook
 }
@@ -12,7 +12,7 @@ function Rating({book}: BookProps): EmotionJSX.Element {
   const [isTabbing, setIsTabbing] = React.useState(false)
 
   const rootClassName = `list-item-${book.id}`
-  const listBookUpdater = useListBookItemUpdate()
+  const listBookUpdater = useUpdateListItem()
   React.useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Tab') {

@@ -2,30 +2,25 @@ import * as React from 'react'
 import tw from 'twin.macro'
 import {useParams} from 'react-router-dom'
 import debounceFn from 'debounce-fn'
-import {Tooltip} from '@chakra-ui/react'
+import {Spinner, Tooltip} from '@chakra-ui/react'
 import {FaRegCalendarAlt} from 'react-icons/fa'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 import * as mq from '@app/styles/media-queries'
 import * as colors from '@app/styles/colors'
 import {loadingBook} from '@app/models/Book/index'
-import {
-  useBookGet,
-  useListBookItemList,
-  useListBookItemUpdate,
-} from '@app/hooks/book'
-import {Textarea} from '@app/components/lib'
+import {useBook} from '@app/hooks/book'
+import {useListItem, useUpdateListItem} from '@app/hooks/book/listItem'
+import {ErrorMessage, Textarea} from '@app/components/lib'
 import {StatusButtons} from '@app/components/StatusButton/index'
 import {Rating} from '@app/components/Rating/index'
 import {formatDate} from '@app/utils/misc'
 
 function BookScreen(): EmotionJSX.Element {
   const {bookId} = useParams()
-  const data = useBookGet(bookId)
+  const data = useBook(bookId)
   const book = data.data?.book ?? loadingBook
   const {title, author, coverImageUrl, publisher, synopsis} = book
-  const listItemsData = useListBookItemList()
-  const listItem =
-    listItemsData.data?.listBooks?.find(li => li.bookId === bookId) || null
+  const listItem = useListItem(book)
   return (
     <div>
       <div
@@ -106,11 +101,11 @@ function ListItemTimeframe({
 }
 
 function NotesTextarea({listItem}: {listItem: ReadBook}) {
-  const listItemUpdater = useListBookItemUpdate()
+  const {mutate, error, isError, isLoading} = useUpdateListItem()
 
   const debouncedMutate = React.useMemo(
-    () => debounceFn(listItemUpdater.mutate, {wait: 300}),
-    [listItemUpdater.mutate],
+    () => debounceFn(mutate, {wait: 300}),
+    [mutate],
   )
 
   function handleNotesChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -132,6 +127,14 @@ function NotesTextarea({listItem}: {listItem: ReadBook}) {
         >
           Notes
         </label>
+        {isError ? (
+          <ErrorMessage
+            variant="inline"
+            error={error as Error}
+            css={{fontSize: '0.7em'}}
+          />
+        ) : null}
+        {isLoading ? <Spinner /> : null}
       </div>
       <Textarea
         id="notes"

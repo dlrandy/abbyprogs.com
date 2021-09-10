@@ -1,19 +1,10 @@
-import {
-  queryBook,
-  getListBooks,
-  updateListBook,
-  getBookById,
-  createListBook,
-  deleteListBook,
-} from '@app/services/Book/index'
+import {queryBook, getBookById} from '@app/services/Book/index'
 import {loadingBooks} from '@app/models/Book/index'
 import {
   useQuery,
-  useMutation,
   UseQueryResult,
   useQueryClient,
   QueryClient,
-  UseMutationResult,
 } from 'react-query'
 import React from 'react'
 
@@ -54,19 +45,7 @@ function useRefetchBookSearchQuery(): () => void {
   }, [queryClient])
 }
 
-function useListBookItemList(): UseQueryResult<
-  {
-    listBooks: ReadBook[] | null
-  },
-  Error
-> {
-  const result = useQuery<{listBooks: ReadBook[] | null}, Error>({
-    queryKey: 'list-items',
-    queryFn: () => getListBooks(),
-  })
-  return result
-}
-function useBookGet(bookId: string): UseQueryResult<
+function useBook(bookId: string): UseQueryResult<
   {
     book: Book | null
   },
@@ -78,30 +57,5 @@ function useBookGet(bookId: string): UseQueryResult<
   })
   return result
 }
-function useListBookItemUpdate(): UseMutationResult<void, Error, ReadBook> {
-  const queryClient = useQueryClient()
-  return useMutation((book: ReadBook) => updateListBook(book), {
-    onSettled: () => queryClient.invalidateQueries('list-items'),
-  })
-}
-function useListBookItemDelete(): UseMutationResult<void, Error, ReadBook> {
-  const queryClient = useQueryClient()
-  return useMutation((book: ReadBook) => deleteListBook(book), {
-    onSettled: () => queryClient.invalidateQueries('list-items'),
-  })
-}
-function useListBookItemCreate(): UseMutationResult<void, Error, ReadBook> {
-  const queryClient = useQueryClient()
-  return useMutation((book: ReadBook) => createListBook(book), {
-    onSettled: () => queryClient.invalidateQueries('list-items'),
-  })
-}
-export {
-  useBookSearch,
-  useBookGet,
-  useRefetchBookSearchQuery,
-  useListBookItemList,
-  useListBookItemUpdate,
-  useListBookItemDelete,
-  useListBookItemCreate,
-}
+
+export {useBookSearch, useBook, useRefetchBookSearchQuery}
