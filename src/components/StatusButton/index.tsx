@@ -11,21 +11,27 @@ import * as colors from '@app/styles/colors'
 import {useAsync} from '@app/utils/hooks'
 import {CircleButton, Spinner} from '@app/components/lib/index'
 import {
-  useQuery,
-  useMutation,
-  UseQueryResult,
-  useQueryClient,
-  QueryClient,
-  UseMutationResult,
-} from 'react-query'
-import {
-  useListBookItemCreate,
-  useListBookItemDelete,
-  useListBookItemList,
-  useListBookItemUpdate,
-} from '@app/hooks/book'
+  useCreateListItem,
+  useRemoveListItem,
+  useListItem,
+  useUpdateListItem,
+} from '@app/hooks/book/listItem'
+import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 
-function TooltipButton({label, highlight, onClick, icon, ...rest}) {
+type TooltipButtonProps = {
+  label: string
+  highlight: string
+  onClick: () => Promise<unknown>
+  icon: React.ReactNode
+}
+
+function TooltipButton({
+  label,
+  highlight,
+  onClick,
+  icon,
+  ...rest
+}: TooltipButtonProps) {
   const {isLoading, isError, error, run} = useAsync()
 
   function handleClick() {
@@ -56,16 +62,17 @@ function TooltipButton({label, highlight, onClick, icon, ...rest}) {
   )
 }
 
-function StatusButtons({book}) {
-  const {data} = useListBookItemList()
-  const listItems = data?.listBooks
-  const listItem = listItems?.find(li => li.bookId === book.id) ?? null
+type StatusButtonsProps = {
+  book: ReadBook
+}
 
-  const listBookUpdater = useListBookItemUpdate()
+function StatusButtons({book}: StatusButtonsProps): EmotionJSX.Element {
+  const listItem = useListItem(book)
+  const listBookUpdater = useUpdateListItem()
 
-  const listBookRemover = useListBookItemDelete()
+  const listBookRemover = useRemoveListItem()
 
-  const listBookCreator = useListBookItemCreate()
+  const listBookCreator = useCreateListItem()
   return (
     <React.Fragment>
       {listItem ? (
@@ -73,8 +80,8 @@ function StatusButtons({book}) {
           <TooltipButton
             label="Unmark as read"
             highlight={colors.yellow}
-            onClick={() =>
-              listBookUpdater.mutate({id: listItem.id, finishDate: null})
+            onClick={async () =>
+              listBookUpdater.mutate({id: listItem.id, finishDate: undefined})
             }
             icon={<FaBook />}
           />
@@ -82,7 +89,7 @@ function StatusButtons({book}) {
           <TooltipButton
             label="Mark as read"
             highlight={colors.green}
-            onClick={() =>
+            onClick={async () =>
               listBookUpdater.mutate({id: listItem.id, finishDate: Date.now()})
             }
             icon={<FaCheckCircle />}
@@ -93,14 +100,14 @@ function StatusButtons({book}) {
         <TooltipButton
           label="Remove from list"
           highlight={colors.danger}
-          onClick={() => listBookRemover.mutate({id: listItem.id})}
+          onClick={async () => listBookRemover.mutate({id: listItem.id})}
           icon={<FaMinusCircle />}
         />
       ) : (
         <TooltipButton
           label="Add to list"
           highlight={colors.indigo}
-          onClick={() => listBookCreator.mutate({bookId: book.id})}
+          onClick={async () => listBookCreator.mutate({bookId: book.id})}
           icon={<FaPlusCircle />}
         />
       )}

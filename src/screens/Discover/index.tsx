@@ -6,18 +6,14 @@ import {Input, BookListUL, Spinner} from '@app/components/lib'
 import {BookRow} from '@app/components/Book-Row/index'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 import * as colors from '@app/styles/colors'
-import {loadingBooks} from '@app/models/Book/index'
+
 import {useBookSearch, useRefetchBookSearchQuery} from '@app/hooks/book'
 function DiscoverBooksScreen(): EmotionJSX.Element {
   const [query, setQuery] = React.useState('')
   const [queried, setQueried] = React.useState(false)
-  const {
-    data = {books: loadingBooks},
-    error,
-    isLoading,
-    isError,
-    isSuccess,
-  } = useBookSearch(encodeURIComponent(query))
+  const {data, error, isLoading, isError, isSuccess} = useBookSearch(
+    encodeURIComponent(query),
+  )
   const getRefetchBookSearchQuery = useRefetchBookSearchQuery()
 
   React.useEffect(() => {

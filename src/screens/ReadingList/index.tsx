@@ -5,7 +5,7 @@ import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 function ReadingListScreen(): EmotionJSX.Element {
   return (
     <ListItemList
-      filterListItems={li => !li.finishDate}
+      filterListItems={(li: ReadBook) => !li.finishDate}
       noListItems={
         <p>
           Hey there! Welcome to your bookshelf reading list. Get started by
