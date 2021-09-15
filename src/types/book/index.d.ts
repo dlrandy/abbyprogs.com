@@ -1,15 +1,16 @@
-type Book = CommonBook & {
+interface Book extends CommonBook {
   id?: string
   loadingBook?: boolean
 }
-type ReadBook = CommonBook & {
+interface ReadBook extends CommonBook {
+  book?: Book
   bookId?: string
   finishDate?: number
   startDate?: number
   notes?: string
 }
 
-type CommonBook = {
+interface CommonBook {
   title?: string
   author?: string
   rating?: number

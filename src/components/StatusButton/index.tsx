@@ -17,7 +17,7 @@ import {
   useUpdateListItem,
 } from '@app/hooks/book/listItem'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
-
+import {isReadBook} from '@app/types/tools'
 type TooltipButtonProps = {
   label: string
   highlight: string
@@ -63,7 +63,7 @@ function TooltipButton({
 }
 
 type StatusButtonsProps = {
-  book: ReadBook
+  book: ReadBook | Book
 }
 
 function StatusButtons({book}: StatusButtonsProps): EmotionJSX.Element {
@@ -73,6 +73,7 @@ function StatusButtons({book}: StatusButtonsProps): EmotionJSX.Element {
   const listBookRemover = useRemoveListItem()
 
   const listBookCreator = useCreateListItem()
+  const bookId = isReadBook(book) ? book.bookId : book.id
   return (
     <React.Fragment>
       {listItem ? (
@@ -81,7 +82,10 @@ function StatusButtons({book}: StatusButtonsProps): EmotionJSX.Element {
             label="Unmark as read"
             highlight={colors.yellow}
             onClick={async () =>
-              listBookUpdater.mutate({id: listItem.id, finishDate: undefined})
+              listBookUpdater.mutate({
+                bookId,
+                finishDate: undefined,
+              })
             }
             icon={<FaBook />}
           />
@@ -90,7 +94,7 @@ function StatusButtons({book}: StatusButtonsProps): EmotionJSX.Element {
             label="Mark as read"
             highlight={colors.green}
             onClick={async () =>
-              listBookUpdater.mutate({id: listItem.id, finishDate: Date.now()})
+              listBookUpdater.mutate({bookId, finishDate: Date.now()})
             }
             icon={<FaCheckCircle />}
           />
@@ -100,14 +104,14 @@ function StatusButtons({book}: StatusButtonsProps): EmotionJSX.Element {
         <TooltipButton
           label="Remove from list"
           highlight={colors.danger}
-          onClick={async () => listBookRemover.mutate({id: listItem.id})}
+          onClick={async () => listBookRemover.mutate({bookId})}
           icon={<FaMinusCircle />}
         />
       ) : (
         <TooltipButton
           label="Add to list"
           highlight={colors.indigo}
-          onClick={async () => listBookCreator.mutate({bookId: book.id})}
+          onClick={async () => listBookCreator.mutate({bookId})}
           icon={<FaPlusCircle />}
         />
       )}

@@ -32,7 +32,7 @@ function ListItemList({
   return (
     <BookListUL>
       {filteredListItems.map(book => (
-        <li key={book.id}>
+        <li key={book.bookId}>
           <BookRow book={book} />
         </li>
       ))}
