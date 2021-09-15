@@ -5,13 +5,13 @@ import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
 import {useListItem} from '@app/hooks/book/listItem'
 import {StatusButtons} from '@app/components/StatusButton/index'
 import {Rating} from '@app/components/Rating/index'
-type BookRowProps<T extends CommonBook> = {
-  book: T
-}
-function BookRow<T>({book}: BookRowProps<T>): EmotionJSX.Element {
+import {isReadBook} from '@app/types/tools'
+
+function BookRow({book}: {book: ReadBook | Book}): EmotionJSX.Element {
   const {title, author, coverImageUrl} = book
   const listItem = useListItem(book)
-  const id = `book-row-book-${book.id}`
+  const bookId = isReadBook(book) ? book.bookId : book.id
+  const id = `book-row-book-${bookId}`
 
   return (
     <div
@@ -23,7 +23,7 @@ function BookRow<T>({book}: BookRowProps<T>): EmotionJSX.Element {
       }}
     >
       <Link
-        to={`/book/${book.id}`}
+        to={`/book/${bookId}`}
         css={{
           minHeight: 270,
           flexGrow: 2,
@@ -87,6 +87,7 @@ function BookRow<T>({book}: BookRowProps<T>): EmotionJSX.Element {
                 >
                   {title}
                 </h2>
+                {listItem?.finishDate ? <Rating book={listItem} /> : null}
               </div>
               <div css={{marginLeft: 10}}>
                 <div
@@ -107,6 +108,20 @@ function BookRow<T>({book}: BookRowProps<T>): EmotionJSX.Element {
           </div>
         </div>
       </Link>
+      <div
+        css={{
+          marginLeft: '20px',
+          position: 'absolute',
+          right: -20,
+          color: colors.gray80,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-around',
+          height: '100%',
+        }}
+      >
+        <StatusButtons book={book} />
+      </div>
     </div>
   )
 }

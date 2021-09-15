@@ -30,7 +30,7 @@ function useListItems(): ReadBook[] {
 }
 function useListItem(book: ReadBook): ReadBook | null {
   const listItems = useListItems()
-  return listItems.find(li => li.bookId === book.id) ?? null
+  return listItems.find(li => li.bookId === book.bookId) ?? null
 }
 
 function useUpdateListItem(
@@ -51,7 +51,7 @@ function useUpdateListItem(
 
         queryClient.setQueryData<ReadBook[]>('list-items', (old = []) => {
           return old.map(item =>
-            item.id === newItem.id ? {...item, ...newItem} : item,
+            item.bookId === newItem.bookId ? {...item, ...newItem} : item,
           )
         })
 
@@ -79,7 +79,7 @@ function useRemoveListItem(
           queryClient.getQueryData<ReadBook[]>('list-items') || []
 
         queryClient.setQueryData<ReadBook[]>('list-items', (old = []) => {
-          return old.filter(item => item.id !== removedItem.id)
+          return old.filter(item => item.bookId !== removedItem.bookId)
         })
 
         return () => queryClient.setQueryData('list-items', previousItems)
