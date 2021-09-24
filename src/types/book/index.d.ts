@@ -1,10 +1,10 @@
 interface Book extends CommonBook {
-  id?: string
+  id: string
   loadingBook?: boolean
 }
 interface ReadBook extends CommonBook {
   book?: Book
-  bookId?: string
+  bookId: string
   finishDate?: number
   startDate?: number
   notes?: string

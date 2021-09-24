@@ -6,27 +6,10 @@ import '@app/server/index'
 import {Logo} from '@app/components/Logo/index'
 import {FormBasic} from '@app/components/Form'
 import {ModalBasic} from '@app/components/Modal'
+import {useAuth} from '@app/context/auth-context'
 
-type FormDataBasic = {
-  username: string
-  password: string
-}
-type onSubmitEventHanlder = (params: FormDataBasic) => Promise<unknown>
-const defaultLogin: onSubmitEventHanlder = async formData => {
-  console.log('login', formData)
-}
-
-const defaultRegister: onSubmitEventHanlder = async formData => {
-  console.log('register', formData)
-}
-type UnauthenticatedAppProps = {
-  login: onSubmitEventHanlder
-  register: onSubmitEventHanlder
-}
-function UnauthenticatedApp({
-  login = defaultLogin,
-  register = defaultRegister,
-}: UnauthenticatedAppProps): JSX.Element {
+function UnauthenticatedApp(): JSX.Element {
+  const {login, register} = useAuth()
   const [openModal, setOpenModal] = React.useState('none')
 
   return (

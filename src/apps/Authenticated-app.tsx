@@ -21,12 +21,7 @@ import {ReadingListScreen} from '@app/screens/ReadingList/index'
 import {FinishedScreen} from '@app/screens/Finished/index'
 import {NotFoundScreen} from '@app/screens/NotFound/index'
 import {EmotionJSX} from '@emotion/react/types/jsx-namespace'
-
-type AuthenticatedAppProps = {
-  user: User
-  logout: () => void
-  [key: string]: unknown
-}
+import {useAuth} from '@app/context/auth-context'
 
 function ErrorFallback({error}: {error: Error}): EmotionJSX.Element {
   return (
@@ -43,10 +38,8 @@ function ErrorFallback({error}: {error: Error}): EmotionJSX.Element {
   )
 }
 
-function AuthenticatedApp({
-  user,
-  logout,
-}: AuthenticatedAppProps): EmotionJSX.Element {
+function AuthenticatedApp(): EmotionJSX.Element {
+  const {user, logout} = useAuth()
   return (
     <ErrorBoundary FallbackComponent={FullPageErrorFallback}>
       <div css={[tw` flex items-center absolute top-4 right-4 `]}>
@@ -81,7 +74,7 @@ function AuthenticatedApp({
   )
 }
 function NavLink(props: LinkProps): EmotionJSX.Element {
-  const match = useMatch(props.to)
+  const match = useMatch(props.to.toString())
 
   return (
     <RouterLink
